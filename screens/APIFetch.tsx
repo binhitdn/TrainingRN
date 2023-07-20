@@ -1,6 +1,6 @@
 import {StyleSheet, Text, View, ActivityIndicator} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import axios from 'axios';
+import {fetchData} from '../api/fetchData';
 
 interface User {
   id: number;
@@ -15,22 +15,18 @@ const APIFetch = () => {
   const [error, setError] = useState<string>('');
 
   useEffect(() => {
-    fetchData();
+    fetchUsersData();
   }, []);
 
-  const fetchData = () => {
-    setTimeout(async () => {
-      try {
-        const response = await axios.get<User[]>(
-          'https://jsonplaceholder.typicode.com/users',
-        );
-        setUsers(response.data);
-        setLoading(false);
-      } catch (e) {
-        setError('エラーが発生しました');
-        setLoading(false);
-      }
-    }, 3000);
+  const fetchUsersData = async () => {
+    try {
+      const userData = await fetchData();
+      setUsers(userData);
+      setLoading(false);
+    } catch (e) {
+      setError('エラーが発生しました');
+      setLoading(false);
+    }
   };
 
   if (loading) {
